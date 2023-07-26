@@ -17,18 +17,30 @@ st.title('Build Partnership Networks using OpenAI''s GPT LLM')
 
 st.write('Hello world!')
 
-openai_api_key = st.sidebar.text_input('Enter your OpenAI API KEy here : ')
+#openai_api_key = st.sidebar.text_input('Enter your OpenAI API KEy here : ')
+# The above line has to be replaced by the code I got from Intel Azure OpenAI API access
+
+#Note: The openai-python library support for Azure OpenAI is in preview.
+import os
+import openai
+openai.api_type = "azure"
+openai.api_base = "https://oai-svc-info-ret.openai.azure.com/"
+openai.api_version = "2023-03-15-preview"
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+
 
 def generate_response(input_text):
-  response = openai.Completion.create(
-    model="text-davinci-003",
-    prompt=input_text,
-    temperature=0,
-    max_tokens=1000,
-    top_p=1.0,
-    frequency_penalty=0.0,
-    presence_penalty=0.0
-    )
+  response = openai.ChatCompletion.create(
+    engine="GPT35",
+    messages = [{"role":"system","content":"You are an AI assistant that helps people find information."},{"role":"user","content":input_text}],
+    temperature=0.7,
+    max_tokens=800,
+    top_p=0.95,
+    frequency_penalty=0,
+    presence_penalty=0,
+    stop=None)
+    
   
   #st.info(type(response.choices[0].text))
 
@@ -202,7 +214,7 @@ def generate_response(input_text):
   plt.show()
 
 
-
+"""
 with st.form('my_form'):
   text = st.text_area('Enter text:', 'What are the three key pieces of advice for learning how to code?')
   submitted = st.form_submit_button('Submit')
@@ -210,7 +222,7 @@ with st.form('my_form'):
     st.warning('Please enter your OpenAI API key!', icon='⚠')
   if submitted and openai_api_key.startswith('sk-'):
     generate_response(text)
-
+"""
 
 
 
